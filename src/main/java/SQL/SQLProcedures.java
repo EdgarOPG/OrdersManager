@@ -1,3 +1,4 @@
+package SQL;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,7 +48,6 @@ public class SQLProcedures {
 //        List<Object[]> orderItems = query.getResultList();
 //        return orderItems;
 //    }
-    
     public List<Object[]> getOrderItems(Integer id) throws SQLException {
         Statement stmt = null;
         String query = "SELECT tablaorders.*\n"
@@ -75,17 +75,34 @@ public class SQLProcedures {
         return itemList;
     }
 
+    public Integer getLastIndex() throws SQLException {
+        Statement stmt = null;
+        String query = "  SELECT tablaorders.*\n"
+                + "  FROM xmlorders x,\n"
+                + "    XMLTABLE ('/Orders/Order[not (@id < preceding-sibling::Order/@id)"
+                + "    and not (@id < following-sibling::Order/@id)]' \n"
+                + "    PASSING x.orders \n"
+                + "    COLUMNS \n"
+                + "    max_id NUMBER PATH '@id') tablaorders";
+        stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        rs.next();
+        return rs.getInt(1);
+    }
+
     public static void main(String[] args) throws SQLException {
 //        SQLProcedures sqlp = new SQLProcedures();
 //        String XML = "<Orders></Orders>";
 //        sqlp.createOrder(XML);
         SQLProcedures sqlp = new SQLProcedures();
 
-        List<Object[]> rows = sqlp.getOrderItems(1);
+        List<Object[]> rows = sqlp.getOrderItems(2);
         for (Object[] row : rows) {
             for (int i = 0; i < row.length; i++) {
                 System.out.println(row[i].toString());
             }
         }
+
+        System.out.println("Last index " + sqlp.getLastIndex());
     }
 }
