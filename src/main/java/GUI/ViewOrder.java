@@ -7,12 +7,17 @@ package GUI;
 
 import Enums.OperationType;
 import SQL.SQLProcedures;
+import com.mxrck.autocompleter.TextAutoCompleter;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import static org.jdom2.filter.Filters.text;
 
 /**
  *
@@ -28,11 +33,15 @@ public class ViewOrder extends javax.swing.JFrame {
     DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
     List<Object[]> listItems;
+    List<Object> listDetails;
 
     SQLProcedures sqlp = new SQLProcedures();
 
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+
     public ViewOrder(OperationType operation) throws SQLException {
         initComponents();
+        setLocationRelativeTo(null);
         tblItems.setModel(tableModel);
         switch (operation) {
             case CREATE:
@@ -46,8 +55,10 @@ public class ViewOrder extends javax.swing.JFrame {
     }
 
     public ViewOrder() {
+        TextAutoCompleter textAutoAcompleter = new TextAutoCompleter(txtCliente);
+        textAutoAcompleter.addItem("Hala");
         initComponents();
-
+        setLocationRelativeTo(null);
     }
 
     public void refreshTable(List<Object[]> rows) {
@@ -72,14 +83,14 @@ public class ViewOrder extends javax.swing.JFrame {
         tblItems = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
+        dchFecha = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
         txtOrderId = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        txtCliente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
@@ -154,7 +165,7 @@ public class ViewOrder extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))))
+                            .addComponent(dchFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -166,7 +177,7 @@ public class ViewOrder extends javax.swing.JFrame {
                     .addComponent(txtOrderId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dchFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -177,9 +188,14 @@ public class ViewOrder extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre cliente:");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        txtCliente.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtClienteFocusGained(evt);
+            }
+        });
+        txtCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                txtClienteActionPerformed(evt);
             }
         });
 
@@ -205,7 +221,7 @@ public class ViewOrder extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField2)))
+                        .addComponent(txtCliente)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -214,7 +230,7 @@ public class ViewOrder extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -349,9 +365,9 @@ public class ViewOrder extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void txtClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtClienteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+    }//GEN-LAST:event_txtClienteActionPerformed
 
     private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
         // TODO add your handling code here:
@@ -363,6 +379,9 @@ public class ViewOrder extends javax.swing.JFrame {
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
+            listDetails = sqlp.getOrderDetails(Integer.parseInt(txtOrderId.getText()));
+            Date date = dateFormat.parse(String.valueOf(listDetails.get(1)));
+            dchFecha.setDate(date);
             listItems = sqlp.getOrderItems(Integer.parseInt(txtOrderId.getText()));
             if (!listItems.equals(null)) {
                 refreshTable(listItems);
@@ -370,6 +389,10 @@ public class ViewOrder extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, "Orden no encontrada");
             }
         } catch (SQLException ex) {
+            Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (ParseException ex) {
+//            Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnBuscarActionPerformed
@@ -381,6 +404,12 @@ public class ViewOrder extends javax.swing.JFrame {
     private void btnBuscarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnBuscarMouseClicked
 
     }//GEN-LAST:event_btnBuscarMouseClicked
+
+    private void txtClienteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusGained
+        TextAutoCompleter completerClient = new TextAutoCompleter(txtCliente);
+        completerClient.addItem("Hala");
+        completerClient.getItemSelected();
+    }//GEN-LAST:event_txtClienteFocusGained
 
     /**
      * @param args the command line arguments
@@ -420,8 +449,8 @@ public class ViewOrder extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Añadir;
     private javax.swing.JButton btnBuscar;
+    private com.toedter.calendar.JDateChooser dchFecha;
     private javax.swing.JComboBox<String> jComboBox1;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -435,12 +464,12 @@ public class ViewOrder extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
     private javax.swing.JTable tblItems;
+    private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtOrderId;
     // End of variables declaration//GEN-END:variables
 }

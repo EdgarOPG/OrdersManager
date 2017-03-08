@@ -94,7 +94,6 @@ public class JDOMProcedures {
         Element raiz = crearNodo("Order");
         getDocXML().addContent(raiz);
         
-        getNodoHijo() = crearNodo("Date", nombre);
     return null;
     }
            

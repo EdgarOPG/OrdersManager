@@ -61,31 +61,28 @@ public class SQLProcedures {
         stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         ResultSetMetaData rsmd = rs.getMetaData();
-        if (!rs.equals(' ')) {
-            int rowIndex = 0;
-            List<Object[]> itemList = new ArrayList<>();
-            while (rs.next()) {
-                Object[] itemArray = new Object[rsmd.getColumnCount()];
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    itemArray[i - 1] = rs.getObject(i);
-                }
-                itemList.add(rowIndex, itemArray);
-                rowIndex++;
+        int rowIndex = 0;
+        List<Object[]> itemList = new ArrayList<>();
+        while (rs.next()) {
+            Object[] itemArray = new Object[rsmd.getColumnCount()];
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                itemArray[i - 1] = rs.getObject(i);
             }
-            rs.close();
-            return itemList;
+            itemList.add(rowIndex, itemArray);
+            rowIndex++;
         }
-        return null;
+        rs.close();
+        return itemList;
     }
 
-    public List<Object[]> getOrderDetails(Integer id) throws SQLException {
+    public List<Object> getOrderDetails(Integer id) throws SQLException {
         Statement stmt = null;
-        String query = "  SELECT tablaorders.*\n"
+        String query = "SELECT tablaorders.*\n"
                 + "  FROM xmlorders x,\n"
                 + "  XMLTABLE ('/Orders/Order[@id = " + id.toString() + "]' \n"
                 + "  PASSING x.orders \n"
                 + "  COLUMNS order_id NUMBER PATH '@id',\n"
-                + "  order_date VARCHAR2(10) PATH 'Date',\n"
+                + "  order_date VARCHAR2(20) PATH 'Date',\n"
                 + "  order_mode VARCHAR2(20) PATH 'Mode',\n"
                 + "  customer_id NUMBER PATH 'Customer/@id',\n"
                 + "  customer_name VARCHAR2(30) PATH 'Customer',\n"
@@ -94,23 +91,18 @@ public class SQLProcedures {
                 + "  sales_rep VARCHAR(30) PATH 'Sales-rep') tablaorders";
         stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
+        ResultSetMetaData rsmd = rs.getMetaData();
+        System.out.println(rsmd.getColumnCount());
+        List<Object> detailsList = new ArrayList<>();
+        Object item;
         if (rs.next()) {
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int rowIndex = 0;
-            List<Object[]> detailsList = new ArrayList<>();
-            while (rs.next()) {
-                Object[] detailArray = new Object[rsmd.getColumnCount()];
-                for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    detailArray[i - 1] = rs.getObject(i);
-                }
-                detailsList.add(rowIndex, detailArray);
-                rowIndex++;
+            for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+                item = rs.getObject(i);
+                detailsList.add(item);
             }
-            rs.close();
-            return detailsList;
-        } else {
-            return null;
         }
+        rs.close();
+        return detailsList;
     }
 
     public Integer getLastIndex() throws SQLException {
@@ -134,13 +126,16 @@ public class SQLProcedures {
 //        sqlp.createOrder(XML);
         SQLProcedures sqlp = new SQLProcedures();
 
-        List<Object[]> rows = sqlp.getOrderDetails(2);
-        for (Object[] row : rows) {
-            for (int i = 0; i < row.length; i++) {
-                System.out.println(row[i].toString());
-            }
+//        List<Object[]> rows = sqlp.getOrderItems(2);
+//        for (Object[] row : rows) {
+//            for (int i = 0; i < row.length; i++) {
+//                System.out.println(row[i].toString());
+//            }
+//        }
+        List<Object> columns = sqlp.getOrderDetails(1);
+        for (Object column : columns) {
+            System.out.println(column.toString());
         }
-
-        System.out.println("Last index " + sqlp.getLastIndex());
+//        System.out.println("Last index " + sqlp.getLastIndex());
     }
 }
