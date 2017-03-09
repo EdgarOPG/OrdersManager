@@ -124,7 +124,7 @@
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="jComboBox1" max="32767" attributes="0"/>
-                              <Component id="dchFecha" pref="119" max="32767" attributes="0"/>
+                              <Component id="jDateChooser1" pref="119" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -142,7 +142,7 @@
                   </Group>
                   <EmptySpace pref="16" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="dchFecha" min="-2" max="-2" attributes="0"/>
+                      <Component id="jDateChooser1" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
@@ -161,7 +161,7 @@
             <Property name="text" type="java.lang.String" value="Orden No: "/>
           </Properties>
         </Component>
-        <Component class="com.toedter.calendar.JDateChooser" name="dchFecha">
+        <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser1">
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>

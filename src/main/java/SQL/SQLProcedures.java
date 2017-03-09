@@ -1,5 +1,7 @@
 package SQL;
 
+import Entities.Employee;
+import Entities.Job;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -11,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.ParameterMode;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.StoredProcedureQuery;
 
 /*
@@ -26,7 +29,7 @@ public class SQLProcedures {
 
     Connection con = OracleConnection.getInstance().getCon();
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("OrdersManagerPu");
-    EntityManager em = emf.createEntityManager();
+    public EntityManager em = emf.createEntityManager();
 
     public SQLProcedures() {
 
@@ -48,6 +51,13 @@ public class SQLProcedures {
 //        List<Object[]> orderItems = query.getResultList();
 //        return orderItems;
 //    }
+    public List<Employee> getEmployees() {
+        Job job = new Job("SA_REP");
+        Query querySelectEmp = em.createNamedQuery("Employee.findByJobId").setParameter("jobId", job);
+        List<Employee> employees = querySelectEmp.getResultList();
+        return employees;
+    }
+
     public List<Object[]> getOrderItems(Integer id) throws SQLException {
         Statement stmt = null;
         String query = "SELECT tablaorders.*\n"
@@ -132,10 +142,14 @@ public class SQLProcedures {
 //                System.out.println(row[i].toString());
 //            }
 //        }
-        List<Object> columns = sqlp.getOrderDetails(1);
-        for (Object column : columns) {
-            System.out.println(column.toString());
-        }
+//        List<Object> columns = sqlp.getOrderDetails(1);
+//        for (Object column : columns) {
+//            System.out.println(column.toString());
+//        }
 //        System.out.println("Last index " + sqlp.getLastIndex());
+        List<Employee> employees = sqlp.getEmployees();
+        for (Employee employee : employees) {
+            System.out.println(employee.getFirstName());
+        }
     }
 }

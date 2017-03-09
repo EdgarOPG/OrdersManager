@@ -5,19 +5,22 @@
  */
 package GUI;
 
+import Entities.Employee;
 import Enums.OperationType;
 import SQL.SQLProcedures;
+import com.mxrck.autocompleter.AutoCompleterCallback;
 import com.mxrck.autocompleter.TextAutoCompleter;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-import static org.jdom2.filter.Filters.text;
 
 /**
  *
@@ -39,6 +42,8 @@ public class ViewOrder extends javax.swing.JFrame {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
+    List<Employee> employees = sqlp.getEmployees();
+
     public ViewOrder(OperationType operation) throws SQLException {
         initComponents();
         setLocationRelativeTo(null);
@@ -55,8 +60,6 @@ public class ViewOrder extends javax.swing.JFrame {
     }
 
     public ViewOrder() {
-        TextAutoCompleter textAutoAcompleter = new TextAutoCompleter(txtCliente);
-        textAutoAcompleter.addItem("Hala");
         initComponents();
         setLocationRelativeTo(null);
     }
@@ -83,7 +86,7 @@ public class ViewOrder extends javax.swing.JFrame {
         tblItems = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        dchFecha = new com.toedter.calendar.JDateChooser();
+        jDateChooser1 = new com.toedter.calendar.JDateChooser();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
@@ -165,7 +168,7 @@ public class ViewOrder extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(dchFecha, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))))
+                            .addComponent(jDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))))
                 .addContainerGap(19, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -177,7 +180,7 @@ public class ViewOrder extends javax.swing.JFrame {
                     .addComponent(txtOrderId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 16, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(dchFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -381,7 +384,7 @@ public class ViewOrder extends javax.swing.JFrame {
         try {
             listDetails = sqlp.getOrderDetails(Integer.parseInt(txtOrderId.getText()));
             Date date = dateFormat.parse(String.valueOf(listDetails.get(1)));
-            dchFecha.setDate(date);
+            jDateChooser1.setDate(date);
             listItems = sqlp.getOrderItems(Integer.parseInt(txtOrderId.getText()));
             if (!listItems.equals(null)) {
                 refreshTable(listItems);
@@ -406,51 +409,24 @@ public class ViewOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarMouseClicked
 
     private void txtClienteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusGained
+        List<String> nombres = new ArrayList<>();
+        String nombre;
         TextAutoCompleter completerClient = new TextAutoCompleter(txtCliente);
-        completerClient.addItem("Hala");
+        for (Employee employee : employees) {
+            nombre = employee.getFirstName() + ' ' + employee.getLastName();
+            completerClient.addItem(nombre);
+        }
         completerClient.getItemSelected();
     }//GEN-LAST:event_txtClienteFocusGained
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ViewOrder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ViewOrder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ViewOrder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ViewOrder.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ViewOrder().setVisible(true);
-            }
-        });
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Añadir;
     private javax.swing.JButton btnBuscar;
-    private com.toedter.calendar.JDateChooser dchFecha;
     private javax.swing.JComboBox<String> jComboBox1;
+    private com.toedter.calendar.JDateChooser jDateChooser1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
