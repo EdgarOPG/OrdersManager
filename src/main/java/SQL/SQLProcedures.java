@@ -2,6 +2,7 @@ package SQL;
 
 import Entities.Employee;
 import Entities.Job;
+import Entities.Product;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -56,6 +57,12 @@ public class SQLProcedures {
         Query querySelectEmp = em.createNamedQuery("Employee.findByJobId").setParameter("jobId", job);
         List<Employee> employees = querySelectEmp.getResultList();
         return employees;
+    }
+
+    public List<Product> getProducts() {
+        Query querySelectProd = em.createNamedQuery("Product.findAll");
+        List<Product> products = querySelectProd.getResultList();
+        return products;
     }
 
     public List<Object[]> getOrderItems(Integer id) throws SQLException {

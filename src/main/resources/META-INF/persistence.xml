@@ -7,9 +7,11 @@
     <class>Entities.Employee</class>
     <class>Entities.Job</class>
     <class>Entities.Countrie</class>
-    <class>Entities.Location</class>
     <class>Entities.Department</class>
     <class>Entities.Region</class>
+    <class>Entities.Location</class>
+    <class>Entities.ProductInformation</class>
+    <class>Entities.Country</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
       <property name="javax.persistence.jdbc.user" value="oe"/>

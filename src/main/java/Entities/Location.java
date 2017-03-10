@@ -52,7 +52,7 @@ public class Location implements Serializable {
     private String stateProvince;
     @JoinColumn(name = "COUNTRY_ID", referencedColumnName = "COUNTRY_ID")
     @ManyToOne
-    private Countrie countryId;
+    private Country countryId;
     @OneToMany(mappedBy = "locationId")
     private Collection<Department> departmentCollection;
 
@@ -108,11 +108,11 @@ public class Location implements Serializable {
         this.stateProvince = stateProvince;
     }
 
-    public Countrie getCountryId() {
+    public Country getCountryId() {
         return countryId;
     }
 
-    public void setCountryId(Countrie countryId) {
+    public void setCountryId(Country countryId) {
         this.countryId = countryId;
     }
 

@@ -29,69 +29,53 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Customer.findAll", query = "SELECT c FROM Customer c")
     , @NamedQuery(name = "Customer.findByCustomerId", query = "SELECT c FROM Customer c WHERE c.customerId = :customerId")
-    , @NamedQuery(name = "Customer.findByCreditLimit", query = "SELECT c FROM Customer c WHERE c.creditLimit = :creditLimit")
-    , @NamedQuery(name = "Customer.findByCustEmail", query = "SELECT c FROM Customer c WHERE c.custEmail = :custEmail")
     , @NamedQuery(name = "Customer.findByCustFirstName", query = "SELECT c FROM Customer c WHERE c.custFirstName = :custFirstName")
     , @NamedQuery(name = "Customer.findByCustLastName", query = "SELECT c FROM Customer c WHERE c.custLastName = :custLastName")
+    , @NamedQuery(name = "Customer.findByCreditLimit", query = "SELECT c FROM Customer c WHERE c.creditLimit = :creditLimit")
+    , @NamedQuery(name = "Customer.findByCustEmail", query = "SELECT c FROM Customer c WHERE c.custEmail = :custEmail")
     , @NamedQuery(name = "Customer.findByDateOfBirth", query = "SELECT c FROM Customer c WHERE c.dateOfBirth = :dateOfBirth")
+    , @NamedQuery(name = "Customer.findByMaritalStatus", query = "SELECT c FROM Customer c WHERE c.maritalStatus = :maritalStatus")
     , @NamedQuery(name = "Customer.findByGender", query = "SELECT c FROM Customer c WHERE c.gender = :gender")
-    , @NamedQuery(name = "Customer.findByIncomeLevel", query = "SELECT c FROM Customer c WHERE c.incomeLevel = :incomeLevel")
-    , @NamedQuery(name = "Customer.findByMaritalStatus", query = "SELECT c FROM Customer c WHERE c.maritalStatus = :maritalStatus")})
+    , @NamedQuery(name = "Customer.findByIncomeLevel", query = "SELECT c FROM Customer c WHERE c.incomeLevel = :incomeLevel")})
 public class Customer implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "CUSTOMER_ID")
-    private Long customerId;
+    private Integer customerId;
+    @Column(name = "CUST_FIRST_NAME")
+    private String custFirstName;
+    @Column(name = "CUST_LAST_NAME")
+    private String custLastName;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "CREDIT_LIMIT")
     private BigDecimal creditLimit;
     @Column(name = "CUST_EMAIL")
     private String custEmail;
-    @Column(name = "CUST_FIRST_NAME")
-    private String custFirstName;
-    @Column(name = "CUST_LAST_NAME")
-    private String custLastName;
     @Column(name = "DATE_OF_BIRTH")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateOfBirth;
+    @Column(name = "MARITAL_STATUS")
+    private String maritalStatus;
     @Column(name = "GENDER")
     private String gender;
     @Column(name = "INCOME_LEVEL")
     private String incomeLevel;
-    @Column(name = "MARITAL_STATUS")
-    private String maritalStatus;
 
     public Customer() {
     }
 
-    public Customer(Long customerId) {
+    public Customer(Integer customerId) {
         this.customerId = customerId;
     }
 
-    public Long getCustomerId() {
+    public Integer getCustomerId() {
         return customerId;
     }
 
-    public void setCustomerId(Long customerId) {
+    public void setCustomerId(Integer customerId) {
         this.customerId = customerId;
-    }
-
-    public BigDecimal getCreditLimit() {
-        return creditLimit;
-    }
-
-    public void setCreditLimit(BigDecimal creditLimit) {
-        this.creditLimit = creditLimit;
-    }
-
-    public String getCustEmail() {
-        return custEmail;
-    }
-
-    public void setCustEmail(String custEmail) {
-        this.custEmail = custEmail;
     }
 
     public String getCustFirstName() {
@@ -110,12 +94,36 @@ public class Customer implements Serializable {
         this.custLastName = custLastName;
     }
 
+    public BigDecimal getCreditLimit() {
+        return creditLimit;
+    }
+
+    public void setCreditLimit(BigDecimal creditLimit) {
+        this.creditLimit = creditLimit;
+    }
+
+    public String getCustEmail() {
+        return custEmail;
+    }
+
+    public void setCustEmail(String custEmail) {
+        this.custEmail = custEmail;
+    }
+
     public Date getDateOfBirth() {
         return dateOfBirth;
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getMaritalStatus() {
+        return maritalStatus;
+    }
+
+    public void setMaritalStatus(String maritalStatus) {
+        this.maritalStatus = maritalStatus;
     }
 
     public String getGender() {
@@ -132,14 +140,6 @@ public class Customer implements Serializable {
 
     public void setIncomeLevel(String incomeLevel) {
         this.incomeLevel = incomeLevel;
-    }
-
-    public String getMaritalStatus() {
-        return maritalStatus;
-    }
-
-    public void setMaritalStatus(String maritalStatus) {
-        this.maritalStatus = maritalStatus;
     }
 
     @Override

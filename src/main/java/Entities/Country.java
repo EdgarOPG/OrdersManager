@@ -28,10 +28,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "COUNTRIES")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Countrie.findAll", query = "SELECT c FROM Countrie c")
-    , @NamedQuery(name = "Countrie.findByCountryId", query = "SELECT c FROM Countrie c WHERE c.countryId = :countryId")
-    , @NamedQuery(name = "Countrie.findByCountryName", query = "SELECT c FROM Countrie c WHERE c.countryName = :countryName")})
-public class Countrie implements Serializable {
+    @NamedQuery(name = "Country.findAll", query = "SELECT c FROM Country c")
+    , @NamedQuery(name = "Country.findByCountryId", query = "SELECT c FROM Country c WHERE c.countryId = :countryId")
+    , @NamedQuery(name = "Country.findByCountryName", query = "SELECT c FROM Country c WHERE c.countryName = :countryName")})
+public class Country implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,10 +46,10 @@ public class Countrie implements Serializable {
     @ManyToOne
     private Region regionId;
 
-    public Countrie() {
+    public Country() {
     }
 
-    public Countrie(String countryId) {
+    public Country(String countryId) {
         this.countryId = countryId;
     }
 
@@ -96,10 +96,10 @@ public class Countrie implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Countrie)) {
+        if (!(object instanceof Country)) {
             return false;
         }
-        Countrie other = (Countrie) object;
+        Country other = (Country) object;
         if ((this.countryId == null && other.countryId != null) || (this.countryId != null && !this.countryId.equals(other.countryId))) {
             return false;
         }
@@ -108,7 +108,7 @@ public class Countrie implements Serializable {
 
     @Override
     public String toString() {
-        return "Entities.Countrie[ countryId=" + countryId + " ]";
+        return "Entities.Country[ countryId=" + countryId + " ]";
     }
     
 }

@@ -41,7 +41,7 @@ public class Region implements Serializable {
     @Column(name = "REGION_NAME")
     private String regionName;
     @OneToMany(mappedBy = "regionId")
-    private Collection<Countrie> countrieCollection;
+    private Collection<Country> countryCollection;
 
     public Region() {
     }
@@ -67,12 +67,12 @@ public class Region implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Countrie> getCountrieCollection() {
-        return countrieCollection;
+    public Collection<Country> getCountryCollection() {
+        return countryCollection;
     }
 
-    public void setCountrieCollection(Collection<Countrie> countrieCollection) {
-        this.countrieCollection = countrieCollection;
+    public void setCountryCollection(Collection<Country> countryCollection) {
+        this.countryCollection = countryCollection;
     }
 
     @Override

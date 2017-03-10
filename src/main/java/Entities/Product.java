@@ -11,7 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -27,74 +26,103 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
     , @NamedQuery(name = "Product.findByProductId", query = "SELECT p FROM Product p WHERE p.productId = :productId")
-    , @NamedQuery(name = "Product.findByCatalogUrl", query = "SELECT p FROM Product p WHERE p.catalogUrl = :catalogUrl")
+    , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
     , @NamedQuery(name = "Product.findByCategoryId", query = "SELECT p FROM Product p WHERE p.categoryId = :categoryId")
+    , @NamedQuery(name = "Product.findByWeightClass", query = "SELECT p FROM Product p WHERE p.weightClass = :weightClass")
+    , @NamedQuery(name = "Product.findByWarrantyPeriod", query = "SELECT p FROM Product p WHERE p.warrantyPeriod = :warrantyPeriod")
+    , @NamedQuery(name = "Product.findBySupplierId", query = "SELECT p FROM Product p WHERE p.supplierId = :supplierId")
+    , @NamedQuery(name = "Product.findByProductStatus", query = "SELECT p FROM Product p WHERE p.productStatus = :productStatus")
     , @NamedQuery(name = "Product.findByListPrice", query = "SELECT p FROM Product p WHERE p.listPrice = :listPrice")
     , @NamedQuery(name = "Product.findByMinPrice", query = "SELECT p FROM Product p WHERE p.minPrice = :minPrice")
-    , @NamedQuery(name = "Product.findByProductDescription", query = "SELECT p FROM Product p WHERE p.productDescription = :productDescription")
-    , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
-    , @NamedQuery(name = "Product.findByProductStatus", query = "SELECT p FROM Product p WHERE p.productStatus = :productStatus")
-    , @NamedQuery(name = "Product.findBySupplierId", query = "SELECT p FROM Product p WHERE p.supplierId = :supplierId")
-    , @NamedQuery(name = "Product.findByWeightClass", query = "SELECT p FROM Product p WHERE p.weightClass = :weightClass")})
+    , @NamedQuery(name = "Product.findByCatalogUrl", query = "SELECT p FROM Product p WHERE p.catalogUrl = :catalogUrl")})
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "PRODUCT_ID")
-    private Long productId;
-    @Column(name = "CATALOG_URL")
-    private String catalogUrl;
+    private Integer productId;
+    @Column(name = "PRODUCT_NAME")
+    private String productName;
     @Column(name = "CATEGORY_ID")
-    private Integer categoryId;
+    private Short categoryId;
+    @Column(name = "WEIGHT_CLASS")
+    private Short weightClass;
+    @Column(name = "WARRANTY_PERIOD")
+    private Serializable warrantyPeriod;
+    @Column(name = "SUPPLIER_ID")
+    private Integer supplierId;
+    @Column(name = "PRODUCT_STATUS")
+    private String productStatus;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "LIST_PRICE")
     private BigDecimal listPrice;
     @Column(name = "MIN_PRICE")
     private BigDecimal minPrice;
-    @Column(name = "PRODUCT_DESCRIPTION")
-    private String productDescription;
-    @Column(name = "PRODUCT_NAME")
-    private String productName;
-    @Column(name = "PRODUCT_STATUS")
-    private String productStatus;
-    @Column(name = "SUPPLIER_ID")
-    private Long supplierId;
-    @Lob
-    @Column(name = "WARRANTY_PERIOD")
-    private byte[] warrantyPeriod;
-    @Column(name = "WEIGHT_CLASS")
-    private Integer weightClass;
+    @Column(name = "CATALOG_URL")
+    private String catalogUrl;
 
     public Product() {
     }
 
-    public Product(Long productId) {
+    public Product(Integer productId) {
         this.productId = productId;
     }
 
-    public Long getProductId() {
+    public Integer getProductId() {
         return productId;
     }
 
-    public void setProductId(Long productId) {
+    public void setProductId(Integer productId) {
         this.productId = productId;
     }
 
-    public String getCatalogUrl() {
-        return catalogUrl;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setCatalogUrl(String catalogUrl) {
-        this.catalogUrl = catalogUrl;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
-    public Integer getCategoryId() {
+    public Short getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(Integer categoryId) {
+    public void setCategoryId(Short categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public Short getWeightClass() {
+        return weightClass;
+    }
+
+    public void setWeightClass(Short weightClass) {
+        this.weightClass = weightClass;
+    }
+
+    public Serializable getWarrantyPeriod() {
+        return warrantyPeriod;
+    }
+
+    public void setWarrantyPeriod(Serializable warrantyPeriod) {
+        this.warrantyPeriod = warrantyPeriod;
+    }
+
+    public Integer getSupplierId() {
+        return supplierId;
+    }
+
+    public void setSupplierId(Integer supplierId) {
+        this.supplierId = supplierId;
+    }
+
+    public String getProductStatus() {
+        return productStatus;
+    }
+
+    public void setProductStatus(String productStatus) {
+        this.productStatus = productStatus;
     }
 
     public BigDecimal getListPrice() {
@@ -113,52 +141,12 @@ public class Product implements Serializable {
         this.minPrice = minPrice;
     }
 
-    public String getProductDescription() {
-        return productDescription;
+    public String getCatalogUrl() {
+        return catalogUrl;
     }
 
-    public void setProductDescription(String productDescription) {
-        this.productDescription = productDescription;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public String getProductStatus() {
-        return productStatus;
-    }
-
-    public void setProductStatus(String productStatus) {
-        this.productStatus = productStatus;
-    }
-
-    public Long getSupplierId() {
-        return supplierId;
-    }
-
-    public void setSupplierId(Long supplierId) {
-        this.supplierId = supplierId;
-    }
-
-    public byte[] getWarrantyPeriod() {
-        return warrantyPeriod;
-    }
-
-    public void setWarrantyPeriod(byte[] warrantyPeriod) {
-        this.warrantyPeriod = warrantyPeriod;
-    }
-
-    public Integer getWeightClass() {
-        return weightClass;
-    }
-
-    public void setWeightClass(Integer weightClass) {
-        this.weightClass = weightClass;
+    public void setCatalogUrl(String catalogUrl) {
+        this.catalogUrl = catalogUrl;
     }
 
     @Override
