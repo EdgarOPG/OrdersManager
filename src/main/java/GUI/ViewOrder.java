@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -32,7 +33,7 @@ public class ViewOrder extends javax.swing.JFrame {
     /**
      * Creates new form ViewOrder
      */
-    private static final String[] columnNames = {"Id", "Articulo", "Precio unitario", "Cantidad"};
+    private static final String[] columnNames = {" ", "Id", "Articulo", "Precio unitario", "Cantidad"};
 
     DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
@@ -49,9 +50,51 @@ public class ViewOrder extends javax.swing.JFrame {
 
     JDOMProcedures jDOMProcedures = new JDOMProcedures();
 
+    public void cargarDatos() {
+        for (Customer customer : customers) {
+            String customerItem = String.format("%s %s (%s)",
+                    customer.getCustFirstName(),
+                    customer.getCustLastName(),
+                    customer.getCustomerId());
+            cmbCliente.addItem(customerItem);
+        }
+        for (Employee employee : employees) {
+            String employeeItem = String.format("%s %s (%s)",
+                    employee.getFirstName(),
+                    employee.getLastName(),
+                    employee.getEmployeeId());
+            cmbEmployee.addItem(employeeItem);
+        }
+        for (Product product : products) {
+            String employeeItem = String.format("%s (%s)",
+                    product.getProductName(),
+                    product.getProductId());
+            cmbProducts.addItem(employeeItem);
+        }
+    }
+
+    public Integer returnCustomerIndex(Integer id) {
+        for (Integer x = 0; x < customers.size(); x++) {
+            if (id == customers.get(x).getCustomerId()) {
+                return x + 1;
+            }
+        }
+        return -1;
+    }
+
+    public Integer returnSalesRepIndex(Integer id) {
+        for (Integer x = 0; x < employees.size(); x++) {
+            if (id == employees.get(x).getEmployeeId()) {
+                return x + 1;
+            }
+        }
+        return -1;
+    }
+
     public ViewOrder(OperationType operation) throws SQLException {
         initComponents();
         setLocationRelativeTo(null);
+        cargarDatos();
         tblItems.setModel(tableModel);
         switch (operation) {
             case CREATE:
@@ -99,19 +142,19 @@ public class ViewOrder extends javax.swing.JFrame {
         txtModo = new javax.swing.JTextField();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
-        txtCliente = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        txtVendedor = new javax.swing.JTextField();
         btnEliminar = new javax.swing.JButton();
+        cmbCliente = new javax.swing.JComboBox<>();
+        cmbEmployee = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
         Añadir = new javax.swing.JButton();
         jTextField5 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
-        txtArticulo = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
         btnEliminarItem = new javax.swing.JButton();
+        cmbProducts = new javax.swing.JComboBox<>();
         btnBuscar = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
@@ -196,19 +239,7 @@ public class ViewOrder extends javax.swing.JFrame {
 
         jLabel4.setText("Nombre cliente:");
 
-        txtCliente.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtClienteFocusGained(evt);
-            }
-        });
-
         jLabel5.setText("Nombre vendedor:");
-
-        txtVendedor.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtVendedorFocusGained(evt);
-            }
-        });
 
         btnEliminar.setText("Eliminar Orden");
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
@@ -216,6 +247,10 @@ public class ViewOrder extends javax.swing.JFrame {
                 btnEliminarActionPerformed(evt);
             }
         });
+
+        cmbCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
+
+        cmbEmployee.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -228,12 +263,12 @@ public class ViewOrder extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtVendedor, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
+                                .addGap(60, 60, 60)
+                                .addComponent(cmbEmployee, 0, 184, Short.MAX_VALUE))
                             .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(txtCliente))))
+                                .addGap(18, 18, 18)
+                                .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnEliminar)))
@@ -245,11 +280,11 @@ public class ViewOrder extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(txtCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(txtVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnEliminar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -273,12 +308,6 @@ public class ViewOrder extends javax.swing.JFrame {
 
         jLabel7.setText("Articulo:");
 
-        txtArticulo.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                txtArticuloFocusGained(evt);
-            }
-        });
-
         jLabel8.setText("Cantidad:");
 
         txtCantidad.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -294,6 +323,8 @@ public class ViewOrder extends javax.swing.JFrame {
             }
         });
 
+        cmbProducts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -304,8 +335,8 @@ public class ViewOrder extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -331,9 +362,9 @@ public class ViewOrder extends javax.swing.JFrame {
                         .addComponent(Añadir))
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
-                        .addComponent(txtArticulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel8)
-                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(btnEliminarItem)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -373,13 +404,14 @@ public class ViewOrder extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(btnBuscar)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(btnBuscar)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -392,7 +424,6 @@ public class ViewOrder extends javax.swing.JFrame {
     private void AñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AñadirActionPerformed
         Integer selectedRow = tblItems.getSelectedRow();
         if (selectedRow >= 0) {
-
         } else {
             JOptionPane.showMessageDialog(null, "No se selecciono ningun registro");
         }
@@ -418,8 +449,8 @@ public class ViewOrder extends javax.swing.JFrame {
             dchFecha.setDate(date);
             listItems = sqlp.getOrderItems(Integer.parseInt(txtOrderId.getText()));
 
-            txtCliente.setText(listDetails.get(4).toString());
-            txtVendedor.setText(listDetails.get(7).toString());
+            cmbCliente.setSelectedIndex(returnCustomerIndex(Integer.parseInt(listDetails.get(3).toString())));
+            cmbEmployee.setSelectedIndex(returnSalesRepIndex(Integer.parseInt(listDetails.get(6).toString())));
             txtModo.setText(listDetails.get(2).toString());
 
             System.out.println(listItems);
@@ -446,17 +477,6 @@ public class ViewOrder extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnBuscarMouseClicked
 
-    private void txtClienteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusGained
-        List<String> nombres = new ArrayList<>();
-        String nombre;
-        TextAutoCompleter completerCustomer = new TextAutoCompleter(txtCliente);
-        for (Customer Customer : customers) {
-            nombre = Customer.getCustFirstName() + ' ' + Customer.getCustLastName();
-            completerCustomer.addItem(nombre);
-        }
-        System.out.println(completerCustomer.getItemSelected());
-    }//GEN-LAST:event_txtClienteFocusGained
-
     private void btnEliminarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarItemActionPerformed
         Integer selectedRow = tblItems.getSelectedRow();
         if (selectedRow >= 0) {
@@ -467,17 +487,6 @@ public class ViewOrder extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarItemActionPerformed
 
-    private void txtArticuloFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArticuloFocusGained
-        List<String> nombres = new ArrayList<>();
-        String articulo;
-        TextAutoCompleter completerArticle = new TextAutoCompleter(txtArticulo);
-        for (Product product : products) {
-            articulo = product.getProductName();
-            completerArticle.addItem(articulo);
-        }
-        completerArticle.getItemSelected();
-    }//GEN-LAST:event_txtArticuloFocusGained
-
     private void txtCantidadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidadFocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadFocusGained
@@ -485,17 +494,6 @@ public class ViewOrder extends javax.swing.JFrame {
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         System.out.println(jDOMProcedures.xmlOrder(listDetails, listItems));
     }//GEN-LAST:event_btnEliminarActionPerformed
-
-    private void txtVendedorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtVendedorFocusGained
-        List<String> nombres = new ArrayList<>();
-        String nombre;
-        TextAutoCompleter completerEmpleado = new TextAutoCompleter(txtVendedor);
-        for (Employee employee : employees) {
-            nombre = employee.getFirstName() + ' ' + employee.getLastName();
-            completerEmpleado.addItem(nombre);
-        }
-        System.out.println(completerEmpleado.getItemSelected());
-    }//GEN-LAST:event_txtVendedorFocusGained
 
     /**
      * @param args the command line arguments
@@ -505,6 +503,9 @@ public class ViewOrder extends javax.swing.JFrame {
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnEliminarItem;
+    private javax.swing.JComboBox<String> cmbCliente;
+    private javax.swing.JComboBox<String> cmbEmployee;
+    private javax.swing.JComboBox<String> cmbProducts;
     private com.toedter.calendar.JDateChooser dchFecha;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -521,11 +522,8 @@ public class ViewOrder extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tblItems;
-    private javax.swing.JTextField txtArticulo;
     private javax.swing.JTextField txtCantidad;
-    private javax.swing.JTextField txtCliente;
     private javax.swing.JTextField txtModo;
     private javax.swing.JTextField txtOrderId;
-    private javax.swing.JTextField txtVendedor;
     // End of variables declaration//GEN-END:variables
 }
