@@ -132,8 +132,7 @@ public class JDOMProcedures {
         }
         setNodoPadre(order);
         String docStr = xmloutputter.outputString(getNodoPadre());
-        System.out.println(docStr);
-        return null;
+        return docStr;
     }
 
     public static void main(String[] args) {
