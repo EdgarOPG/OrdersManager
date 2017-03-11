@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "PRODUCT_INFORMATION")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p")
+    @NamedQuery(name = "Product.findAll", query = "SELECT p FROM Product p ORDER BY p.productId")
     , @NamedQuery(name = "Product.findByProductId", query = "SELECT p FROM Product p WHERE p.productId = :productId")
     , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
     , @NamedQuery(name = "Product.findByCategoryId", query = "SELECT p FROM Product p WHERE p.categoryId = :categoryId")

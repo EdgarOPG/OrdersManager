@@ -84,7 +84,7 @@ public class ViewOrder extends javax.swing.JFrame {
 
     public Integer returnSalesRepIndex(Integer id) {
         for (Integer x = 0; x < employees.size(); x++) {
-            if (id == employees.get(x).getEmployeeId()) {
+            if (Objects.equals(id, employees.get(x).getEmployeeId())) {
                 return x + 1;
             }
         }
@@ -101,9 +101,11 @@ public class ViewOrder extends javax.swing.JFrame {
                 txtOrderId.setText(sqlp.getLastIndex().toString());
                 btnBuscar.setEnabled(false);
                 btnEliminar.setEnabled(false);
+                this.setTitle("Crear orden");
                 break;
             case UPDATE:
                 txtOrderId.setEditable(true);
+                this.setTitle("Actualizar orden");
                 break;
         }
     }
