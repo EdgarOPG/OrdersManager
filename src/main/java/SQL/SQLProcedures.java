@@ -87,6 +87,7 @@ public class SQLProcedures {
                 + "  PASSING x.orders \n"
                 + "  COLUMNS item_id NUMBER PATH '@id',\n"
                 + "  product_id NUMBER PATH 'Product/@id',\n"
+                + "  product_name VARCHAR2(30) PATH 'Product',\n"
                 + "  unit_price NUMBER PATH 'Unit-price',\n"
                 + "  quantity NUMBER PATH 'Quantity') tablaorders";
         stmt = con.createStatement();

@@ -96,6 +96,7 @@ public class JDOMProcedures {
         setRaiz(crearNodo("Orders"));
         getDocXML().addContent(getRaiz());
         setNodoHijo(crearNodo("Order"));
+        Element order = getNodoHijo();
         getNodoHijo().setAttribute("id", orderDetails.get(0).toString());
         getNodoHijo().addContent(crearNodo("Date", orderDetails.get(1).toString()));
         getNodoHijo().addContent(crearNodo("Mode", orderDetails.get(2).toString()));
@@ -110,12 +111,17 @@ public class JDOMProcedures {
         getNodoHijo().setAttribute("id", orderDetails.get(6).toString());
         getNodoPadre().addContent(getNodoHijo());
         setNodoHijo(crearNodo("Items"));
-        getNodoPadre().addContent(getNodoHijo());
-        getRaiz().addContent(getNodoPadre());
-        setNodoPadre(getNodoHijo());
+        getNodoPadre().addContent(getNodoHijo()); //order es padre
+        getRaiz().addContent(getNodoPadre()); //order se le agrega a orders
+        setNodoPadre(getNodoHijo()); // Items es padre
         for (Object[] listItem : listItems) {
-            setNodoHijo(crearNodo("Item"));
-            getNodoPadre().addContent(getNodoHijo());
+            setNodoHijo(crearNodo("Item")); //Item es hijo
+            getNodoHijo().setAttribute("id", listItem[0].toString());
+            getNodoPadre().addContent(getNodoHijo()); //Item se le agrega a Items
+            setNodoPadre(getNodoHijo()); //Item es padre
+            setNodoHijo(crearNodo("Product", listItem[1].toString()));
+            getNodoHijo().setAttribute("id", listItem[2].toString());
+//            getNodoPadre().addContent(crearNodo("", contenido));
         }
 
 //        for (Object orderItem : orderDetails) {
