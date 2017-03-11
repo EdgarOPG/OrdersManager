@@ -29,7 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Product.findByProductName", query = "SELECT p FROM Product p WHERE p.productName = :productName")
     , @NamedQuery(name = "Product.findByCategoryId", query = "SELECT p FROM Product p WHERE p.categoryId = :categoryId")
     , @NamedQuery(name = "Product.findByWeightClass", query = "SELECT p FROM Product p WHERE p.weightClass = :weightClass")
-    , @NamedQuery(name = "Product.findByWarrantyPeriod", query = "SELECT p FROM Product p WHERE p.warrantyPeriod = :warrantyPeriod")
     , @NamedQuery(name = "Product.findBySupplierId", query = "SELECT p FROM Product p WHERE p.supplierId = :supplierId")
     , @NamedQuery(name = "Product.findByProductStatus", query = "SELECT p FROM Product p WHERE p.productStatus = :productStatus")
     , @NamedQuery(name = "Product.findByListPrice", query = "SELECT p FROM Product p WHERE p.listPrice = :listPrice")
@@ -48,8 +47,6 @@ public class Product implements Serializable {
     private Short categoryId;
     @Column(name = "WEIGHT_CLASS")
     private Short weightClass;
-    @Column(name = "WARRANTY_PERIOD")
-    private Serializable warrantyPeriod;
     @Column(name = "SUPPLIER_ID")
     private Integer supplierId;
     @Column(name = "PRODUCT_STATUS")
@@ -99,14 +96,6 @@ public class Product implements Serializable {
 
     public void setWeightClass(Short weightClass) {
         this.weightClass = weightClass;
-    }
-
-    public Serializable getWarrantyPeriod() {
-        return warrantyPeriod;
-    }
-
-    public void setWarrantyPeriod(Serializable warrantyPeriod) {
-        this.warrantyPeriod = warrantyPeriod;
     }
 
     public Integer getSupplierId() {

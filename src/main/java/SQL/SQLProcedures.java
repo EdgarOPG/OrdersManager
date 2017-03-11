@@ -1,5 +1,6 @@
 package SQL;
 
+import Entities.Customer;
 import Entities.Employee;
 import Entities.Job;
 import Entities.Product;
@@ -43,6 +44,13 @@ public class SQLProcedures {
         query.execute();
     }
 
+    public void deleteOrder(String index) {
+        StoredProcedureQuery query = em.createStoredProcedureQuery("DELETE_XMLORDER")
+                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .setParameter(1, index);
+        query.execute();
+    }
+
 //    public List<Object[]> getOrderItems(Integer id) {
 //        StoredProcedureQuery query = em.createStoredProcedureQuery("GET_ORDER_DETAILS")
 //                .registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN)
@@ -63,6 +71,12 @@ public class SQLProcedures {
         Query querySelectProd = em.createNamedQuery("Product.findAll");
         List<Product> products = querySelectProd.getResultList();
         return products;
+    }
+
+    public List<Customer> getCustomers() {
+        Query querySelectCus = em.createNamedQuery("Customer.findAll");
+        List<Customer> customers = querySelectCus.getResultList();
+        return customers;
     }
 
     public List<Object[]> getOrderItems(Integer id) throws SQLException {
@@ -109,7 +123,6 @@ public class SQLProcedures {
         stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         ResultSetMetaData rsmd = rs.getMetaData();
-        System.out.println(rsmd.getColumnCount());
         List<Object> detailsList = new ArrayList<>();
         Object item;
         if (rs.next()) {
@@ -134,7 +147,7 @@ public class SQLProcedures {
         stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         rs.next();
-        return rs.getInt(1);
+        return rs.getInt(1) + 1;
     }
 
     public static void main(String[] args) throws SQLException {
@@ -149,14 +162,14 @@ public class SQLProcedures {
 //                System.out.println(row[i].toString());
 //            }
 //        }
-//        List<Object> columns = sqlp.getOrderDetails(1);
-//        for (Object column : columns) {
-//            System.out.println(column.toString());
-//        }
-//        System.out.println("Last index " + sqlp.getLastIndex());
-        List<Employee> employees = sqlp.getEmployees();
-        for (Employee employee : employees) {
-            System.out.println(employee.getFirstName());
+        List<Object> columns = sqlp.getOrderDetails(1);
+        for (Object column : columns) {
+            System.out.println(column.toString());
         }
+//        System.out.println("Last index " + sqlp.getLastIndex());
+//        List<Product> products = sqlp.getProducts();
+//        for (Product product : products) {
+//            System.out.println(product.getProductName());
+//        }
     }
 }

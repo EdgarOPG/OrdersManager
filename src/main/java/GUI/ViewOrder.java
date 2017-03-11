@@ -5,9 +5,11 @@
  */
 package GUI;
 
+import Entities.Customer;
 import Entities.Employee;
 import Entities.Product;
 import Enums.OperationType;
+import JDOM.JDOMProcedures;
 import SQL.SQLProcedures;
 import com.mxrck.autocompleter.TextAutoCompleter;
 import java.sql.SQLException;
@@ -42,7 +44,10 @@ public class ViewOrder extends javax.swing.JFrame {
     SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
 
     List<Employee> employees = sqlp.getEmployees();
-//    List<Product> products = sqlp.getProducts();
+    List<Product> products = sqlp.getProducts();
+    List<Customer> customers = sqlp.getCustomers();
+
+    JDOMProcedures jDOMProcedures = new JDOMProcedures();
 
     public ViewOrder(OperationType operation) throws SQLException {
         initComponents();
@@ -52,6 +57,7 @@ public class ViewOrder extends javax.swing.JFrame {
             case CREATE:
                 txtOrderId.setText(sqlp.getLastIndex().toString());
                 btnBuscar.setEnabled(false);
+                btnEliminar.setEnabled(false);
                 break;
             case UPDATE:
                 txtOrderId.setEditable(true);
@@ -198,13 +204,18 @@ public class ViewOrder extends javax.swing.JFrame {
 
         jLabel5.setText("Nombre vendedor:");
 
-        txtVendedor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtVendedorActionPerformed(evt);
+        txtVendedor.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txtVendedorFocusGained(evt);
             }
         });
 
         btnEliminar.setText("Eliminar Orden");
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -381,7 +392,7 @@ public class ViewOrder extends javax.swing.JFrame {
     private void AñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AñadirActionPerformed
         Integer selectedRow = tblItems.getSelectedRow();
         if (selectedRow >= 0) {
-            
+
         } else {
             JOptionPane.showMessageDialog(null, "No se selecciono ningun registro");
         }
@@ -394,10 +405,6 @@ public class ViewOrder extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void txtVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtVendedorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtVendedorActionPerformed
 
     private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
         // TODO add your handling code here:
@@ -442,12 +449,12 @@ public class ViewOrder extends javax.swing.JFrame {
     private void txtClienteFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtClienteFocusGained
         List<String> nombres = new ArrayList<>();
         String nombre;
-        TextAutoCompleter completerClient = new TextAutoCompleter(txtCliente);
-        for (Employee employee : employees) {
-            nombre = employee.getFirstName() + ' ' + employee.getLastName();
-            completerClient.addItem(nombre);
+        TextAutoCompleter completerCustomer = new TextAutoCompleter(txtCliente);
+        for (Customer Customer : customers) {
+            nombre = Customer.getCustFirstName() + ' ' + Customer.getCustLastName();
+            completerCustomer.addItem(nombre);
         }
-        completerClient.getItemSelected();
+        System.out.println(completerCustomer.getItemSelected());
     }//GEN-LAST:event_txtClienteFocusGained
 
     private void btnEliminarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarItemActionPerformed
@@ -461,19 +468,34 @@ public class ViewOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_btnEliminarItemActionPerformed
 
     private void txtArticuloFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtArticuloFocusGained
-//        List<String> nombres = new ArrayList<>();
-//        String articulo;
-//        TextAutoCompleter completerArticle = new TextAutoCompleter(txtArticulo);
-//        for (Product product : products) {
-//            articulo = product.getProductName();
-//            completerArticle.addItem(articulo);
-//        }
-//        completerArticle.getItemSelected();
+        List<String> nombres = new ArrayList<>();
+        String articulo;
+        TextAutoCompleter completerArticle = new TextAutoCompleter(txtArticulo);
+        for (Product product : products) {
+            articulo = product.getProductName();
+            completerArticle.addItem(articulo);
+        }
+        completerArticle.getItemSelected();
     }//GEN-LAST:event_txtArticuloFocusGained
 
     private void txtCantidadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidadFocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadFocusGained
+
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
+        System.out.println(jDOMProcedures.xmlOrder(listDetails, listItems));
+    }//GEN-LAST:event_btnEliminarActionPerformed
+
+    private void txtVendedorFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtVendedorFocusGained
+        List<String> nombres = new ArrayList<>();
+        String nombre;
+        TextAutoCompleter completerEmpleado = new TextAutoCompleter(txtVendedor);
+        for (Employee employee : employees) {
+            nombre = employee.getFirstName() + ' ' + employee.getLastName();
+            completerEmpleado.addItem(nombre);
+        }
+        System.out.println(completerEmpleado.getItemSelected());
+    }//GEN-LAST:event_txtVendedorFocusGained
 
     /**
      * @param args the command line arguments

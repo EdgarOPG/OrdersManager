@@ -3,7 +3,6 @@
   <persistence-unit name="OrdersManagerPu" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <class>Entities.Customer</class>
-    <class>Entities.Product</class>
     <class>Entities.Employee</class>
     <class>Entities.Job</class>
     <class>Entities.Countrie</class>
@@ -12,6 +11,7 @@
     <class>Entities.Location</class>
     <class>Entities.ProductInformation</class>
     <class>Entities.Country</class>
+    <class>Entities.Product</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:1521:XE"/>
       <property name="javax.persistence.jdbc.user" value="oe"/>

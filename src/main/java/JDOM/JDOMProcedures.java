@@ -29,6 +29,8 @@ public class JDOMProcedures {
     private static Element raiz;
     private static Element nodoHijo;
     private static Element nodoPadre;
+    Format format = Format.getPrettyFormat();
+    XMLOutputter xmloutputter = new XMLOutputter(format);
 
     public Element getNodoPadre() {
         return nodoPadre;
@@ -89,15 +91,40 @@ public class JDOMProcedures {
         }
         return elementList;
     }
-    
-    public String xmlOrder(List<Object[]> listItems, List<Object[]> orderDetails){
-        Element raiz = crearNodo("Order");
-        getDocXML().addContent(raiz);
-        
-    return null;
+
+    public String xmlOrder(List<Object> orderDetails, List<Object[]> listItems) {
+        setRaiz(crearNodo("Orders"));
+        getDocXML().addContent(getRaiz());
+        setNodoHijo(crearNodo("Order"));
+        getNodoHijo().setAttribute("id", orderDetails.get(0).toString());
+        getNodoHijo().addContent(crearNodo("Date", orderDetails.get(1).toString()));
+        getNodoHijo().addContent(crearNodo("Mode", orderDetails.get(2).toString()));
+        setNodoPadre(getNodoHijo());
+        setNodoHijo(crearNodo("Customer", orderDetails.get(4).toString()));
+        getNodoHijo().setAttribute("id", orderDetails.get(3).toString());
+        getNodoPadre().addContent(getNodoHijo());
+        setNodoHijo(getNodoPadre());
+        getNodoHijo().addContent(crearNodo("Total", orderDetails.get(5).toString()));
+        setNodoPadre(getNodoHijo());
+        setNodoHijo(crearNodo("Sales-rep", orderDetails.get(7).toString()));
+        getNodoHijo().setAttribute("id", orderDetails.get(6).toString());
+        getNodoPadre().addContent(getNodoHijo());
+        setNodoHijo(crearNodo("Items"));
+        getNodoPadre().addContent(getNodoHijo());
+        getRaiz().addContent(getNodoPadre());
+//        for (Object[] listItem : listItems) {
+//            setNodoHijo(crearNodo("Item"));
+//            getNodoPadre().addContent(getNodoHijo());
+//        }
+
+//        for (Object orderItem : orderDetails) {
+//            setNodoHijo(crearNodo(orderDetails.get(i).toString()));
+//            i++;
+//        }
+        String docStr = xmloutputter.outputString(getDocXML());
+        System.out.println(docStr);
+        return null;
     }
-           
-    private static String nombre;
 
     public static void main(String[] args) {
         JDOMProcedures p = new JDOMProcedures();
@@ -144,7 +171,7 @@ public class JDOMProcedures {
             System.out.println(next.getName());
         }
 
-        p.setNodoPadre(p.getNode(p.getDocXML().getDescendants(Filters.element()), 21));
+        p.setNodoPadre(p.getNode(p.getDocXML().getDescendants(Filters.element()), 20));
         p.setNodoHijo(p.crearNodo("Edad", "32"));
 
         p.getNodoPadre().addContent(p.getNodoHijo());
