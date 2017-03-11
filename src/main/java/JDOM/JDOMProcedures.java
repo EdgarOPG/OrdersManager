@@ -93,6 +93,7 @@ public class JDOMProcedures {
     }
 
     public String xmlOrder(List<Object> orderDetails, List<Object[]> listItems) {
+        getDocXML().removeContent();
         setRaiz(crearNodo("Orders"));
         getDocXML().addContent(getRaiz());
         setNodoHijo(crearNodo("Order"));
@@ -121,9 +122,9 @@ public class JDOMProcedures {
             getNodoHijo().setAttribute("id", listItem[0].toString());
             getNodoPadre().addContent(getNodoHijo()); //Item se le agrega a Items
             setNodoPadre(getNodoHijo()); //Item es padre
-            setNodoHijo(crearNodo("Product", listItem[1].toString()));
-            getNodoHijo().setAttribute("id", listItem[2].toString());
-            setNodoPadre(Item);
+            setNodoHijo(crearNodo("Product", listItem[2].toString()));
+            getNodoHijo().setAttribute("id", listItem[1].toString());
+            getNodoPadre().addContent(getNodoHijo());
             setNodoHijo(crearNodo("Unit-price", listItem[3].toString()));
             getNodoPadre().addContent(getNodoHijo());
             setNodoHijo(crearNodo("Quantity", listItem[4].toString()));
