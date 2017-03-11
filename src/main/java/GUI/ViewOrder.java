@@ -63,8 +63,8 @@ public class ViewOrder extends javax.swing.JFrame {
 
     public Object[] createItem() {
         Object[] item = new Object[5];
-        Integer row = tblItems.getSelectedRow() - 1;
-        item[0] = row;
+        int index = listItems.size();
+        item[0] = index + 1;
         item[1] = products.get(cmbProducts.getSelectedIndex() - 1).getProductId();
         item[2] = products.get(cmbProducts.getSelectedIndex() - 1).getProductName();
         item[3] = products.get(cmbProducts.getSelectedIndex() - 1).getMinPrice().toString();
