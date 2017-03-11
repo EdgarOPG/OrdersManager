@@ -114,21 +114,23 @@ public class JDOMProcedures {
         getNodoPadre().addContent(getNodoHijo()); //order es padre
         getRaiz().addContent(getNodoPadre()); //order se le agrega a orders
         setNodoPadre(getNodoHijo()); // Items es padre
+        Element Item = getNodoPadre(); //referencia a Items como padre
         for (Object[] listItem : listItems) {
+            setNodoPadre(Item);
             setNodoHijo(crearNodo("Item")); //Item es hijo
             getNodoHijo().setAttribute("id", listItem[0].toString());
             getNodoPadre().addContent(getNodoHijo()); //Item se le agrega a Items
             setNodoPadre(getNodoHijo()); //Item es padre
             setNodoHijo(crearNodo("Product", listItem[1].toString()));
             getNodoHijo().setAttribute("id", listItem[2].toString());
-//            getNodoPadre().addContent(crearNodo("", contenido));
+            setNodoPadre(Item);
+            setNodoHijo(crearNodo("Unit-price", listItem[3].toString()));
+            getNodoPadre().addContent(getNodoHijo());
+            setNodoHijo(crearNodo("Quantity", listItem[4].toString()));
+            getNodoPadre().addContent(getNodoHijo());
         }
-
-//        for (Object orderItem : orderDetails) {
-//            setNodoHijo(crearNodo(orderDetails.get(i).toString()));
-//            i++;
-//        }
-        String docStr = xmloutputter.outputString(getDocXML());
+        setNodoPadre(order);
+        String docStr = xmloutputter.outputString(getNodoPadre());
         System.out.println(docStr);
         return null;
     }
