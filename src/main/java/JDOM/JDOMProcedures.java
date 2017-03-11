@@ -112,10 +112,11 @@ public class JDOMProcedures {
         setNodoHijo(crearNodo("Items"));
         getNodoPadre().addContent(getNodoHijo());
         getRaiz().addContent(getNodoPadre());
-//        for (Object[] listItem : listItems) {
-//            setNodoHijo(crearNodo("Item"));
-//            getNodoPadre().addContent(getNodoHijo());
-//        }
+        setNodoPadre(getNodoHijo());
+        for (Object[] listItem : listItems) {
+            setNodoHijo(crearNodo("Item"));
+            getNodoPadre().addContent(getNodoHijo());
+        }
 
 //        for (Object orderItem : orderDetails) {
 //            setNodoHijo(crearNodo(orderDetails.get(i).toString()));
