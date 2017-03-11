@@ -28,6 +28,7 @@
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                   <Component id="btnUpdate" max="32767" attributes="0"/>
                   <Component id="bntCreate" max="32767" attributes="0"/>
+                  <Component id="bntDelete" max="32767" attributes="0"/>
               </Group>
               <EmptySpace pref="186" max="32767" attributes="0"/>
           </Group>
@@ -40,7 +41,9 @@
               <Component id="bntCreate" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
               <Component id="btnUpdate" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="34" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+              <Component id="bntDelete" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="36" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -60,6 +63,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUpdateActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="bntDelete">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Eliminar orden"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bntDeleteActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

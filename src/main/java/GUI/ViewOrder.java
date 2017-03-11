@@ -11,7 +11,6 @@ import Entities.Product;
 import Enums.OperationType;
 import JDOM.JDOMProcedures;
 import SQL.SQLProcedures;
-import com.mxrck.autocompleter.TextAutoCompleter;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +34,8 @@ public class ViewOrder extends javax.swing.JFrame {
      */
     private static final String[] columnNames = {" ", "Id", "Articulo", "Precio unitario", "Cantidad"};
 
+    public OperationType operation;
+
     DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
     List<Object[]> listItems;
@@ -49,6 +50,27 @@ public class ViewOrder extends javax.swing.JFrame {
     List<Customer> customers = sqlp.getCustomers();
 
     JDOMProcedures jDOMProcedures = new JDOMProcedures();
+
+    public List<Object> createListDetails() {
+        List<Object> listDetails = new ArrayList<>();
+        listDetails.add(txtOrderId.getText());
+        listDetails.add(dchFecha.getDate().toString());
+        listDetails.add(txtModo.getText());
+        listDetails.add(employees.get(cmbEmployee.getSelectedIndex() - 1).getEmployeeId().toString());
+        listDetails.add(employees.get(cmbEmployee.getSelectedIndex() - 1).getFirstName());
+        return null;
+    }
+
+    public Object[] createItem() {
+        Object[] item = new Object[5];
+        Integer row = tblItems.getSelectedRow() - 1;
+        item[0] = row;
+        item[1] = products.get(cmbProducts.getSelectedIndex() - 1).getProductId();
+        item[2] = products.get(cmbProducts.getSelectedIndex() - 1).getProductName();
+        item[3] = products.get(cmbProducts.getSelectedIndex() - 1).getMinPrice().toString();
+        item[4] = txtCantidad.getText();
+        return item;
+    }
 
     public void cargarDatos() {
         for (Customer customer : customers) {
@@ -93,6 +115,7 @@ public class ViewOrder extends javax.swing.JFrame {
 
     public ViewOrder(OperationType operation) throws SQLException {
         initComponents();
+        this.operation = operation;
         setLocationRelativeTo(null);
         cargarDatos();
         tblItems.setModel(tableModel);
@@ -100,12 +123,18 @@ public class ViewOrder extends javax.swing.JFrame {
             case CREATE:
                 txtOrderId.setText(sqlp.getLastIndex().toString());
                 btnBuscar.setEnabled(false);
-                btnEliminar.setEnabled(false);
                 this.setTitle("Crear orden");
                 break;
             case UPDATE:
                 txtOrderId.setEditable(true);
                 this.setTitle("Actualizar orden");
+                break;
+            case DELETE:
+                btnEliminarItem.setEnabled(false);
+                txtOrderId.setEditable(true);
+                bntAgnadir.setEnabled(false);
+                cmbProducts.setEditable(false);
+                this.setTitle("Eliminar orden");
                 break;
         }
     }
@@ -121,6 +150,17 @@ public class ViewOrder extends javax.swing.JFrame {
         for (Object[] row : rows) {
             tableModel.addRow(row);
         }
+    }
+
+    public Float calculateTotal(List<Object[]> rows) {
+        float total = 0;
+        float x, y;
+        for (Object[] row : rows) {
+            x = Float.parseFloat(row[3].toString());
+            y = Float.parseFloat(row[4].toString());
+            total = (total + (x * y));
+        }
+        return total;
     }
 
     /**
@@ -145,18 +185,18 @@ public class ViewOrder extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        btnEliminar = new javax.swing.JButton();
         cmbCliente = new javax.swing.JComboBox<>();
         cmbEmployee = new javax.swing.JComboBox<>();
         jPanel3 = new javax.swing.JPanel();
-        Añadir = new javax.swing.JButton();
-        jTextField5 = new javax.swing.JTextField();
+        bntAgnadir = new javax.swing.JButton();
+        txtTotal = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         txtCantidad = new javax.swing.JTextField();
-        btnEliminarItem = new javax.swing.JButton();
         cmbProducts = new javax.swing.JComboBox<>();
+        btnOk = new javax.swing.JButton();
+        btnEliminarItem = new javax.swing.JButton();
         btnBuscar = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
@@ -243,13 +283,6 @@ public class ViewOrder extends javax.swing.JFrame {
 
         jLabel5.setText("Nombre vendedor:");
 
-        btnEliminar.setText("Eliminar Orden");
-        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEliminarActionPerformed(evt);
-            }
-        });
-
         cmbCliente.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
 
         cmbEmployee.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
@@ -259,21 +292,16 @@ public class ViewOrder extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addGap(60, 60, 60)
-                                .addComponent(cmbEmployee, 0, 184, Short.MAX_VALUE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnEliminar)))
+                        .addComponent(jLabel5)
+                        .addGap(60, 60, 60)
+                        .addComponent(cmbEmployee, 0, 184, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -287,22 +315,20 @@ public class ViewOrder extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(cmbEmployee, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnEliminar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        Añadir.setText("Añadir");
-        Añadir.addActionListener(new java.awt.event.ActionListener() {
+        bntAgnadir.setText("Añadir Item");
+        bntAgnadir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AñadirActionPerformed(evt);
+                bntAgnadirActionPerformed(evt);
             }
         });
 
-        jTextField5.setEditable(false);
-        jTextField5.addActionListener(new java.awt.event.ActionListener() {
+        txtTotal.setEditable(false);
+        txtTotal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField5ActionPerformed(evt);
+                txtTotalActionPerformed(evt);
             }
         });
 
@@ -318,6 +344,15 @@ public class ViewOrder extends javax.swing.JFrame {
             }
         });
 
+        cmbProducts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
+
+        btnOk.setText("Confirmar Operacion");
+        btnOk.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOkActionPerformed(evt);
+            }
+        });
+
         btnEliminarItem.setText("Eliminar Item");
         btnEliminarItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -325,32 +360,28 @@ public class ViewOrder extends javax.swing.JFrame {
             }
         });
 
-        cmbProducts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Seleccionar-" }));
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel7)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(jLabel8)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(43, 43, 43)
-                        .addComponent(jLabel6)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Añadir))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnEliminarItem)))
+                .addComponent(jLabel7)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(bntAgnadir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnOk, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnEliminarItem, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -359,17 +390,17 @@ public class ViewOrder extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel6)
-                        .addComponent(Añadir))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel7)
                         .addComponent(jLabel8)
                         .addComponent(txtCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                        .addComponent(cmbProducts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6))
+                    .addComponent(bntAgnadir))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(btnEliminarItem)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnOk))
         );
 
         btnBuscar.setText("Buscar");
@@ -413,23 +444,23 @@ public class ViewOrder extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(btnBuscar)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 6, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 223, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void AñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AñadirActionPerformed
+    private void bntAgnadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntAgnadirActionPerformed
         Integer selectedRow = tblItems.getSelectedRow();
-        if (selectedRow >= 0) {
-        } else {
-            JOptionPane.showMessageDialog(null, "No se selecciono ningun registro");
-        }
-    }//GEN-LAST:event_AñadirActionPerformed
+        listItems.add(createItem());
+        refreshTable(listItems);
+        txtTotal.setText(calculateTotal(listItems).toString());
+    }//GEN-LAST:event_bntAgnadirActionPerformed
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO lost focus for jtable:
@@ -439,9 +470,9 @@ public class ViewOrder extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-    private void jTextField5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField5ActionPerformed
+    private void txtTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTotalActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField5ActionPerformed
+    }//GEN-LAST:event_txtTotalActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
@@ -454,11 +485,9 @@ public class ViewOrder extends javax.swing.JFrame {
             cmbCliente.setSelectedIndex(returnCustomerIndex(Integer.parseInt(listDetails.get(3).toString())));
             cmbEmployee.setSelectedIndex(returnSalesRepIndex(Integer.parseInt(listDetails.get(6).toString())));
             txtModo.setText(listDetails.get(2).toString());
-
-            System.out.println(listItems);
-
             if (!listItems.equals(null)) {
                 refreshTable(listItems);
+                txtTotal.setText(calculateTotal(listItems).toString());
             } else {
                 JOptionPane.showMessageDialog(null, "Orden no encontrada");
             }
@@ -487,24 +516,34 @@ public class ViewOrder extends javax.swing.JFrame {
         } else {
             JOptionPane.showMessageDialog(null, "No se selecciono ningun registro");
         }
+        txtTotal.setText(calculateTotal(listItems).toString());
     }//GEN-LAST:event_btnEliminarItemActionPerformed
 
     private void txtCantidadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidadFocusGained
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadFocusGained
 
-    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        System.out.println(jDOMProcedures.xmlOrder(listDetails, listItems));
-    }//GEN-LAST:event_btnEliminarActionPerformed
+    private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
+        switch (this.operation) {
+            case CREATE:
+                sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
+                break;
+            case UPDATE:
+                sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
+                break;
+            case DELETE:
+                break;
+        }
+    }//GEN-LAST:event_btnOkActionPerformed
 
     /**
      * @param args the command line arguments
      */
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Añadir;
+    private javax.swing.JButton bntAgnadir;
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnEliminarItem;
+    private javax.swing.JButton btnOk;
     private javax.swing.JComboBox<String> cmbCliente;
     private javax.swing.JComboBox<String> cmbEmployee;
     private javax.swing.JComboBox<String> cmbProducts;
@@ -522,10 +561,10 @@ public class ViewOrder extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField5;
     private javax.swing.JTable tblItems;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtModo;
     private javax.swing.JTextField txtOrderId;
+    private javax.swing.JTextField txtTotal;
     // End of variables declaration//GEN-END:variables
 }

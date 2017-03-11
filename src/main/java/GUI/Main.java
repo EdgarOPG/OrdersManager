@@ -35,6 +35,7 @@ public class Main extends javax.swing.JFrame {
 
         bntCreate = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
+        bntDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,6 +53,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        bntDelete.setText("Eliminar orden");
+        bntDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bntDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -60,7 +68,8 @@ public class Main extends javax.swing.JFrame {
                 .addGap(45, 45, 45)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnUpdate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bntCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(bntCreate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bntDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(186, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -70,7 +79,9 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(bntCreate)
                 .addGap(34, 34, 34)
                 .addComponent(btnUpdate)
-                .addContainerGap(34, Short.MAX_VALUE))
+                .addGap(32, 32, 32)
+                .addComponent(bntDelete)
+                .addContainerGap(36, Short.MAX_VALUE))
         );
 
         pack();
@@ -93,6 +104,15 @@ public class Main extends javax.swing.JFrame {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
+
+    private void bntDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bntDeleteActionPerformed
+        try {
+            ViewOrder viewOrder = new ViewOrder(OperationType.DELETE);
+            viewOrder.setVisible(true);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bntDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -131,6 +151,7 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bntCreate;
+    private javax.swing.JButton bntDelete;
     private javax.swing.JButton btnUpdate;
     // End of variables declaration//GEN-END:variables
 }
