@@ -16,10 +16,10 @@ import org.jdom2.output.XMLOutputter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.JTextArea;
 import org.jdom2.Content;
 import org.jdom2.filter.Filters;
 
@@ -31,6 +31,7 @@ public class JDOMProcedures {
     private static Element nodoPadre;
     Format format = Format.getPrettyFormat();
     XMLOutputter xmloutputter = new XMLOutputter(format);
+    SQL.SQLProcedures sqlp;
 
     public Element getNodoPadre() {
         return nodoPadre;
@@ -135,7 +136,7 @@ public class JDOMProcedures {
         return docStr;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         JDOMProcedures p = new JDOMProcedures();
         Document docXML = p.getDocXML();
         Element raiz = p.crearNodo("CatLibros");
@@ -175,11 +176,10 @@ public class JDOMProcedures {
         nodoHijo.addContent(p.crearNodo("Precio", "260.00"));
         raiz.addContent(nodoHijo);
 
-        for (Iterator iterator = docXML.getDescendants(Filters.element()); iterator.hasNext();) {
-            Element next = (Element) iterator.next();
-            System.out.println(next.getName());
-        }
-
+//        for (Iterator iterator = docXML.getDescendants(Filters.element()); iterator.hasNext();) {
+//            Element next = (Element) iterator.next();
+//            System.out.println(next.getName());
+//        }
         p.setNodoPadre(p.getNode(p.getDocXML().getDescendants(Filters.element()), 20));
         p.setNodoHijo(p.crearNodo("Edad", "32"));
 
@@ -187,8 +187,14 @@ public class JDOMProcedures {
 
         Format format = Format.getPrettyFormat();
         XMLOutputter xmloutputter = new XMLOutputter(format);
-        String docStr = xmloutputter.outputString(docXML);
-        System.out.println(docStr);
+
+        List<Object> columns = p.sqlp.getOrderDetails(1);
+        for (Object column : columns) {
+            System.out.println(column.toString());
+        }
+        
+        String doc = p.xmlOrder(columns, p.sqlp.getOrderItems(1));
+        System.out.println(doc);
 
         try {
             File f = new File("C:\\ApJava\\Libreria.xml");

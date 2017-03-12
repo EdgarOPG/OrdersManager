@@ -38,8 +38,8 @@ public class ViewOrder extends javax.swing.JFrame {
 
     DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
 
-    List<Object[]> listItems;
-    List<Object> listDetails;
+    List<Object[]> listItems = new ArrayList<>();
+    List<Object> listDetails = new ArrayList<>();
 
     SQLProcedures sqlp = new SQLProcedures();
 
@@ -51,20 +51,26 @@ public class ViewOrder extends javax.swing.JFrame {
 
     JDOMProcedures jDOMProcedures = new JDOMProcedures();
 
-    public List<Object> createListDetails() {
-        List<Object> listDetails = new ArrayList<>();
+    public void addToListDetails() {
         listDetails.add(txtOrderId.getText());
-        listDetails.add(dchFecha.getDate().toString());
+        String fecha = dateFormat.format(dchFecha.getDate());
+        listDetails.add(fecha);
         listDetails.add(txtModo.getText());
+        listDetails.add(customers.get(cmbCliente.getSelectedIndex() - 1).getCustomerId());
+        listDetails.add(customers.get(cmbCliente.getSelectedIndex() - 1).getCustFirstName());
+        listDetails.add(txtTotal.getText());
         listDetails.add(employees.get(cmbEmployee.getSelectedIndex() - 1).getEmployeeId().toString());
         listDetails.add(employees.get(cmbEmployee.getSelectedIndex() - 1).getFirstName());
-        return null;
     }
 
     public Object[] createItem() {
         Object[] item = new Object[5];
-        int index = listItems.size();
-        item[0] = index + 1;
+        if (listItems.isEmpty()) {
+            item[0] = 1;
+        } else {
+            Integer index = listItems.size();
+            item[0] = index + 1;
+        }
         item[1] = products.get(cmbProducts.getSelectedIndex() - 1).getProductId();
         item[2] = products.get(cmbProducts.getSelectedIndex() - 1).getProductName();
         item[3] = products.get(cmbProducts.getSelectedIndex() - 1).getMinPrice().toString();
@@ -526,6 +532,12 @@ public class ViewOrder extends javax.swing.JFrame {
     private void btnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkActionPerformed
         switch (this.operation) {
             case CREATE:
+                addToListDetails();
+//                List<Object> columns;
+//                columns = listDetails;
+//                for (Object column : columns) {
+//                    System.out.println(listDetails.indexOf(column) + column.toString());
+//                }
                 sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
                 break;
             case UPDATE:

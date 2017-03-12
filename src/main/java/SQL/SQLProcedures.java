@@ -4,6 +4,7 @@ import Entities.Customer;
 import Entities.Employee;
 import Entities.Job;
 import Entities.Product;
+import JDOM.JDOMProcedures;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -80,7 +81,7 @@ public class SQLProcedures {
     }
 
     public List<Object[]> getOrderItems(Integer id) throws SQLException {
-        Statement stmt = null;
+        Statement stmt = con.createStatement();
         String query = "SELECT tablaorders.*\n"
                 + "  FROM xmlorders x,\n"
                 + "  XMLTABLE ('/Orders/Order[@id = " + id.toString() + "]/Order-items/Item' \n"
@@ -90,7 +91,6 @@ public class SQLProcedures {
                 + "  product_name VARCHAR2(30) PATH 'Product',\n"
                 + "  unit_price NUMBER PATH 'Unit-price',\n"
                 + "  quantity NUMBER PATH 'Quantity') tablaorders";
-        stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         ResultSetMetaData rsmd = rs.getMetaData();
         int rowIndex = 0;
@@ -108,7 +108,7 @@ public class SQLProcedures {
     }
 
     public List<Object> getOrderDetails(Integer id) throws SQLException {
-        Statement stmt = null;
+        Statement stmt = con.createStatement();
         String query = "SELECT tablaorders.*\n"
                 + "  FROM xmlorders x,\n"
                 + "  XMLTABLE ('/Orders/Order[@id = " + id.toString() + "]' \n"
@@ -121,7 +121,6 @@ public class SQLProcedures {
                 + "  total NUMBER PATH 'Total',\n"
                 + "  sales_rep_id NUMBER PATH 'Sales-rep/@id',\n"
                 + "  sales_rep VARCHAR(30) PATH 'Sales-rep') tablaorders";
-        stmt = con.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         ResultSetMetaData rsmd = rs.getMetaData();
         List<Object> detailsList = new ArrayList<>();
@@ -156,17 +155,22 @@ public class SQLProcedures {
 //        String XML = "<Orders></Orders>";
 //        sqlp.createOrder(XML);
         SQLProcedures sqlp = new SQLProcedures();
+        JDOMProcedures jDOMProcedures = new JDOMProcedures();
 
-//        List<Object[]> rows = sqlp.getOrderItems(2);
-//        for (Object[] row : rows) {
-//            for (int i = 0; i < row.length; i++) {
-//                System.out.println(row[i].toString());
-//            }
-//        }
         List<Object> columns = sqlp.getOrderDetails(1);
         for (Object column : columns) {
             System.out.println(column.toString());
         }
+
+        List<Object[]> rows = sqlp.getOrderItems(1);
+        for (Object[] row : rows) {
+            for (int i = 0; i < row.length; i++) {
+                System.out.println(row[i].toString());
+            }
+        }
+
+        String doc = jDOMProcedures.xmlOrder(sqlp.getOrderDetails(1), sqlp.getOrderItems(1));
+        System.out.println(doc);
 //        System.out.println("Last index " + sqlp.getLastIndex());
 //        List<Product> products = sqlp.getProducts();
 //        for (Product product : products) {
