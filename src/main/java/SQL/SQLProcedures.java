@@ -45,9 +45,9 @@ public class SQLProcedures {
         query.execute();
     }
 
-    public void deleteOrder(String index) {
+    public void deleteOrder(Integer index) {
         StoredProcedureQuery query = em.createStoredProcedureQuery("DELETE_XMLORDER")
-                .registerStoredProcedureParameter(1, String.class, ParameterMode.IN)
+                .registerStoredProcedureParameter(1, Integer.class, ParameterMode.IN)
                 .setParameter(1, index);
         query.execute();
     }

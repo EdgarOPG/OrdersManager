@@ -541,9 +541,11 @@ public class ViewOrder extends javax.swing.JFrame {
                 sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
                 break;
             case UPDATE:
+                sqlp.deleteOrder(Integer.parseInt(txtOrderId.getText()));
                 sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
                 break;
             case DELETE:
+                sqlp.deleteOrder(Integer.parseInt(txtOrderId.getText()));
                 break;
         }
     }//GEN-LAST:event_btnOkActionPerformed
