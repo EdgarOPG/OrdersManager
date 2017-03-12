@@ -112,7 +112,7 @@ public class JDOMProcedures {
         setNodoHijo(crearNodo("Sales-rep", orderDetails.get(7).toString()));
         getNodoHijo().setAttribute("id", orderDetails.get(6).toString());
         getNodoPadre().addContent(getNodoHijo());
-        setNodoHijo(crearNodo("Items"));
+        setNodoHijo(crearNodo("Order-items"));
         getNodoPadre().addContent(getNodoHijo()); //order es padre
         getRaiz().addContent(getNodoPadre()); //order se le agrega a orders
         setNodoPadre(getNodoHijo()); // Items es padre
