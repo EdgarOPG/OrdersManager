@@ -52,6 +52,7 @@ public class ViewOrder extends javax.swing.JFrame {
     JDOMProcedures jDOMProcedures = new JDOMProcedures();
 
     public void addToListDetails() {
+        listDetails.clear();
         listDetails.add(txtOrderId.getText());
         String fecha = dateFormat.format(dchFecha.getDate());
         listDetails.add(fecha);
@@ -483,24 +484,21 @@ public class ViewOrder extends javax.swing.JFrame {
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         try {
             listDetails = sqlp.getOrderDetails(Integer.parseInt(txtOrderId.getText()));
-
-            Date date = dateFormat.parse(String.valueOf(listDetails.get(1)));
-            dchFecha.setDate(date);
             listItems = sqlp.getOrderItems(Integer.parseInt(txtOrderId.getText()));
+            if (listDetails.isEmpty() || listItems.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Orden no encontrada");
+            } else {
+                Date date = dateFormat.parse(String.valueOf(listDetails.get(1)));
+                dchFecha.setDate(date);
 
-            cmbCliente.setSelectedIndex(returnCustomerIndex(Integer.parseInt(listDetails.get(3).toString())));
-            cmbEmployee.setSelectedIndex(returnSalesRepIndex(Integer.parseInt(listDetails.get(6).toString())));
-            txtModo.setText(listDetails.get(2).toString());
-            if (!listItems.equals(null)) {
+                cmbCliente.setSelectedIndex(returnCustomerIndex(Integer.parseInt(listDetails.get(3).toString())));
+                cmbEmployee.setSelectedIndex(returnSalesRepIndex(Integer.parseInt(listDetails.get(6).toString())));
+                txtModo.setText(listDetails.get(2).toString());
                 refreshTable(listItems);
                 txtTotal.setText(calculateTotal(listItems).toString());
-            } else {
-                JOptionPane.showMessageDialog(null, "Orden no encontrada");
             }
         } catch (SQLException ex) {
             Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (ParseException ex) {
-//            Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParseException ex) {
             Logger.getLogger(ViewOrder.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -515,14 +513,20 @@ public class ViewOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarMouseClicked
 
     private void btnEliminarItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarItemActionPerformed
-        Integer selectedRow = tblItems.getSelectedRow();
+        int selectedRow = tblItems.getSelectedRow();
         if (selectedRow >= 0) {
-            listItems.remove(selectedRow);
-            tableModel.removeRow(selectedRow);
+            Integer rows = tblItems.getRowCount();
+            System.out.println(rows);
+            if (rows >= 1) {
+                listItems.remove(selectedRow);
+                refreshTable(listItems);
+                txtTotal.setText(calculateTotal(listItems).toString());
+            } else {
+                JOptionPane.showMessageDialog(null, "Debe mantenerse al menos un articulo");
+            }
         } else {
             JOptionPane.showMessageDialog(null, "No se selecciono ningun registro");
         }
-        txtTotal.setText(calculateTotal(listItems).toString());
     }//GEN-LAST:event_btnEliminarItemActionPerformed
 
     private void txtCantidadFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txtCantidadFocusGained
@@ -533,19 +537,23 @@ public class ViewOrder extends javax.swing.JFrame {
         switch (this.operation) {
             case CREATE:
                 addToListDetails();
-//                List<Object> columns;
-//                columns = listDetails;
-//                for (Object column : columns) {
-//                    System.out.println(listDetails.indexOf(column) + column.toString());
-//                }
                 sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
+                JOptionPane.showMessageDialog(null, "Orden creada");
+                this.dispose();
                 break;
             case UPDATE:
+                addToListDetails();
+                String temp = jDOMProcedures.xmlOrder(listDetails, listItems);
+                System.out.println(temp);
                 sqlp.deleteOrder(Integer.parseInt(txtOrderId.getText()));
-                sqlp.createOrder(jDOMProcedures.xmlOrder(listDetails, listItems));
+                sqlp.createOrder(temp);
+                JOptionPane.showMessageDialog(null, "Orden actualizada");
+                this.dispose();
                 break;
             case DELETE:
                 sqlp.deleteOrder(Integer.parseInt(txtOrderId.getText()));
+                JOptionPane.showMessageDialog(null, "Orden eliminada");
+                this.dispose();
                 break;
         }
     }//GEN-LAST:event_btnOkActionPerformed
